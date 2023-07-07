@@ -58,5 +58,29 @@ class Ant {
   }
 }
 
+/** Keeps track of dark spaces on the playing board.
+ * The spaces are stored in a map with a key of stringified x and y coordinates
+ * and a value of the space's color.
+ * Ex) A red spaces at x=1, y=2 looks like "1,2": "red"
+*/
+class Board {
+  board = new Map();
 
-export default Ant;
+  /**
+   * Given an x coordinate, y coordinate, and color, toggles a dark space on
+   * the board. If adding a dark space, also apply the given color.
+   * Returns undefined.
+   */
+  toggleDarkSpace(x, y, color) {
+    const coordString = `${x},${y}`
+
+    if (this.board.has(coordString)) {
+      this.board.delete(coordString)
+    } else {
+      this.board.set(coordString, color)
+    }
+  }
+}
+
+
+export {Ant, Board};
