@@ -99,9 +99,9 @@ class Board {
     bigX = this.biggestX,
     smallY = this.smallestY,
     bigY = this.biggestY) {
-      for (let y = bigY; y >=0; y--) {
+      for (let y = bigY; y >= smallY; y--) {
         let line = ""
-        for (let x = 0; x <= bigX; x++ ) {
+        for (let x = smallX; x <= bigX; x++ ) {
           if (this.board.has(`${x},${y}`)) {
             line += this.board.get(`${x},${y}`);
           }
