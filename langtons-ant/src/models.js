@@ -62,9 +62,14 @@ class Ant {
  * The spaces are stored in a map with a key of stringified x and y coordinates
  * and a value of the space's color.
  * Ex) A red spaces at x=1, y=2 looks like "1,2": "red"
+ * Tracks the biggest/smallest X/Y values in the board to update its printed size.
 */
 class Board {
   board = new Map();
+  biggestX = 0
+  smallestX = 0
+  biggestY = 0
+  smallestY = 0
 
   /**
    * Given an x coordinate, y coordinate, and color, toggles a dark space on
@@ -79,6 +84,34 @@ class Board {
     } else {
       this.board.set(coordString, color)
     }
+  }
+  /** Prints a text representation of the board.
+   * Underscores represent empty spaces.
+   * Lowercase letters represent colored spaces.
+   * Optionally takes boundary variables to print a larger or smaller board
+   * Ex) print(0,2,0,2) on a board with red on 1,1 and green on 2,2:
+   *  __g
+   *  _r_
+   *  ___
+   */
+  print(
+    smallX = this.smallestX,
+    bigX = this.biggestX,
+    smallY = this.smallestY,
+    bigY = this.biggestY) {
+      for (let y = bigY; y >=0; y--) {
+        let line = ""
+        for (let x = 0; x <= bigX; x++ ) {
+          if (this.board.has(`${x},${y}`)) {
+            line += this.board.get(`${x},${y}`);
+          }
+          else {
+            line += '_'
+          }
+        }
+        console.log(line)
+      }
+
   }
 }
 
