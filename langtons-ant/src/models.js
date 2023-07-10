@@ -43,8 +43,8 @@ class Ant {
   moveLight() {
     this._rotateCW();
     const instructions = this.facings[this.facing];
-    this.x += instructions[0]
-    this.y += instructions[1]
+    this.x += instructions[0];
+    this.y += instructions[1];
   }
 
   /**Move ant following dark square rules:
@@ -53,8 +53,8 @@ class Ant {
   moveDark() {
     this._rotateCCW();
     const instructions = this.facings[this.facing];
-    this.x += instructions[0]
-    this.y += instructions[1]
+    this.x += instructions[0];
+    this.y += instructions[1];
   }
 }
 
@@ -66,25 +66,71 @@ class Ant {
 */
 class Board {
   board = new Map();
-  biggestX = 0
-  smallestX = 0
-  biggestY = 0
-  smallestY = 0
+  xMax = 0;
+  xMin = 0;
+  yMax = 0;
+  yMin = 0;
 
   /**
    * Given an x coordinate, y coordinate, and color, toggles a dark space on
    * the board. If adding a dark space, also apply the given color.
+   * Updates board boundaries.
    * Returns undefined.
    */
   toggleDarkSpace(x, y, color) {
-    const coordString = `${x},${y}`
-
+    this.updateBoardBounds(x, y);
+    const coordString = `${x},${y}`;
     if (this.board.has(coordString)) {
-      this.board.delete(coordString)
+      this.board.delete(coordString);
     } else {
-      this.board.set(coordString, color)
+      this.board.set(coordString, color);
     }
   }
+
+  /**
+   * Given an x and y coordinate, if the coordinate is bigger or smaller than
+   * the current bounds, update the bounds.
+   *
+   * @param {number} x The x coordinate to check against
+   * @param {number} y The y coordinate to check against
+   */
+  updateBoardBounds(x, y) {
+    if (x > this.xMax) this.xMax = x;
+    if (x < this.xMin) this.xMin = x;
+    if (y > this.yMax) this.yMax = x;
+    if (y < this.yMin) this.yMin = y;
+  }
+
+  /**
+ * Transforms xy coordinates from the board into pixel coordinates on a canvas.
+ *
+ * A canvas has an origin (0,0) in the top left corner.
+ * Increasing x moves right and increasing y moves down.
+ *
+ * The coordinates should aim to fit the largest number of squares in the canvas
+ *
+ * @param {number} x The x coordinate to be transformed
+ * @param {number} y The y coordinate to be transformed
+ * @param {number} canvasWidth The pixel width of the canvas
+ * @param {number} canvasHeight The pixel height of the canvas
+ */
+transformCoordinates(x,y,canvasWidth,canvasHeight) {
+  const boardWidth = Math.abs(this.xMin) + Math.abs(this.xMax)
+  const boardHeight = Math.abs(this.yMin) + Math.abs(this.yMax)
+
+  const squareSize = (boardWidth / canvasWidth <= boardHeight / canvasHeight)
+  ? Math.floor(boardWidth / canvasWidth)
+  : Math.floor(boardHeight / canvasHeight)
+  //determine square size.
+    //find the largest square size that fits width times into canvasWidth
+    //find the largest square size that fits height times into canvasHeight
+    //take the smaller of the 2
+
+  //find top left corner of 2d
+
+
+}
+
   /** Prints a text representation of the board.
    * Underscores represent empty spaces.
    * Lowercase letters represent colored spaces.
@@ -94,26 +140,24 @@ class Board {
    *  _r_
    *  ___
    */
-  print(
-    smallX = this.smallestX,
-    bigX = this.biggestX,
-    smallY = this.smallestY,
-    bigY = this.biggestY) {
-      for (let y = bigY; y >= smallY; y--) {
-        let line = ""
-        for (let x = smallX; x <= bigX; x++ ) {
-          if (this.board.has(`${x},${y}`)) {
-            line += this.board.get(`${x},${y}`);
-          }
-          else {
-            line += '_'
-          }
+  print(smallX = this.xMin,
+    bigX = this.xMax,
+    smallY = this.yMin,
+    bigY = this.yMax) {
+    for (let y = bigY; y >= smallY; y--) {
+      let line = "";
+      for (let x = smallX; x <= bigX; x++) {
+        if (this.board.has(`${x},${y}`)) {
+          line += this.board.get(`${x},${y}`);
         }
-        console.log(line)
+        else {
+          line += '_';
+        }
       }
-
+      console.log(line);
+    }
   }
 }
 
 
-export {Ant, Board};
+export { Ant, Board };
