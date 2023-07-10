@@ -80,6 +80,27 @@ class Board {
   canvasHeight = 0;
   squareSize = 0;
 
+  /** Sets up a board
+   *
+   * @param {number} canvasWidth width of associated canvas
+   * @param {number} canvasHeight height of associated canvas
+   * @param {number} xMax greatest x of coordinate system. default 0
+   * @param {number} xMin smallest x of coordinate system. default 0
+   * @param {number} yMax greatest y of coordinate system. default 0
+   * @param {number} yMin smallest y of coordinate system. default 0
+   */
+  constructor(canvasWidth, canvasHeight,
+     xMin = 0, xMax = 0, yMax = 0, yMin = 0) {
+      this.canvasWidth = canvasWidth;
+      this.canvasHeight = canvasHeight;
+      this.xMax = xMax;
+      this.xMin = xMin;
+      this.yMax = yMax;
+      this.yMin = yMin;
+      this.updateBoardBounds(xMin, yMax) //get bounds by updating far corners
+      this.updateBoardBounds(xMax, yMin)
+      this.updateSquareSize()
+  }
   /**
    * Given an x coordinate, y coordinate, and color, toggles a dark space on
    * the board. If adding a dark space, also apply the given color.
