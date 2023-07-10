@@ -58,18 +58,27 @@ class Ant {
   }
 }
 
-/** Keeps track of dark spaces on the playing board.
- * The spaces are stored in a map with a key of stringified x and y coordinates
- * and a value of the space's color.
- * Ex) A red spaces at x=1, y=2 looks like "1,2": "red"
- * Tracks the biggest/smallest X/Y values in the board to update its printed size.
-*/
+/** A board for langton's ant. Keeps track of ants and the state of the board
+ *
+ * board: Mapping of all dark spaces on the board in the format:
+ *  {'x,y': 'color',...}
+ * ants: array of all ants currently in play.
+ * xMax, xMin, yMax, yMin: Measure the greatest dimensions the board has filled
+ * boardWidth, boardHeight: Measure how wide and tall the board is.
+ * canvasWidth, canvasHeight: Measure how big the associated canvas is.
+ */
 class Board {
   board = new Map();
+  ants = []
   xMax = 0;
   xMin = 0;
   yMax = 0;
   yMin = 0;
+  boardWidth = 0;
+  boardHeight = 0;
+  canvasWidth = 0;
+  canvasHeight = 0;
+  squareSize = 0;
 
   /**
    * Given an x coordinate, y coordinate, and color, toggles a dark space on
@@ -91,45 +100,69 @@ class Board {
    * Given an x and y coordinate, if the coordinate is bigger or smaller than
    * the current bounds, update the bounds.
    *
+   * If the bounds have changed, returns true. Otherwise false.
+   *
    * @param {number} x The x coordinate to check against
    * @param {number} y The y coordinate to check against
    */
   updateBoardBounds(x, y) {
-    if (x > this.xMax) this.xMax = x;
-    if (x < this.xMin) this.xMin = x;
-    if (y > this.yMax) this.yMax = x;
-    if (y < this.yMin) this.yMin = y;
+    let hasChanged = false;
+    if (x > this.xMax) {
+      this.xMax = x;
+      hasChanged = true;
+    }
+    if (x < this.xMin) {
+      this.xMin = x;
+      hasChanged = true;
+    }
+    if (y > this.yMax) {
+      this.yMax = x;
+      hasChanged = true;
+    }
+    if (y < this.yMin) {
+      this.yMin = y;
+      hasChanged = true;
+    }
+    if (hasChanged) {
+      this.boardWidth = Math.abs(this.xMin) + Math.abs(this.xMax);
+      this.boardHeight = Math.abs(this.yMin) + Math.abs(this.yMax);
+    }
+    return hasChanged;
   }
 
   /**
- * Transforms xy coordinates from the board into pixel coordinates on a canvas.
- *
- * A canvas has an origin (0,0) in the top left corner.
- * Increasing x moves right and increasing y moves down.
- *
- * The coordinates should aim to fit the largest number of squares in the canvas
- *
- * @param {number} x The x coordinate to be transformed
- * @param {number} y The y coordinate to be transformed
- * @param {number} canvasWidth The pixel width of the canvas
- * @param {number} canvasHeight The pixel height of the canvas
- */
-transformCoordinates(x,y,canvasWidth,canvasHeight) {
-  const boardWidth = Math.abs(this.xMin) + Math.abs(this.xMax)
-  const boardHeight = Math.abs(this.yMin) + Math.abs(this.yMax)
+   * Updates the size of canvas squares
+   */
+  updateSquareSize() {
+    this.squareSize = (this.boardWidth / this.canvasWidth <=
+     this.boardHeight / this.canvasHeight)
+     ? Math.floor(this.boardWidth / this.canvasWidth)
+     : Math.floor(this.boardHeight / this.canvasHeight)
+  }
 
-  const squareSize = (boardWidth / canvasWidth <= boardHeight / canvasHeight)
-  ? Math.floor(boardWidth / canvasWidth)
-  : Math.floor(boardHeight / canvasHeight)
-  //determine square size.
-    //find the largest square size that fits width times into canvasWidth
-    //find the largest square size that fits height times into canvasHeight
-    //take the smaller of the 2
+  /**
+   * Transforms xy coordinates from the board into pixel coordinates on a canvas.
+   *
+   * A canvas has an origin (0,0) in the top left corner.
+   * Increasing x moves right and increasing y moves down.
+   *
+   * If the coordinates are out of the board's bounds, throws an error
+   *
+   * @param {number} x The x coordinate to be transformed
+   * @param {number} y The y coordinate to be transformed
+   * @param {number} canvasWidth The pixel width of the canvas
+   * @param {number} canvasHeight The pixel height of the canvas
+   *
+   * Returns [x,y]
+   */
+  transformCoordinates(x, y, canvasWidth, canvasHeight) {
+    //throw error if x or y out of bounds
 
-  //find top left corner of 2d
+    const xPixels = Math.abs(this.xMin - x) * this.squareSize
+    const yPixels = Math.abs(this.yMax - y) * this.squareSize
 
-
-}
+    return[xPixels,yPixels]
+  }
 
   /** Prints a text representation of the board.
    * Underscores represent empty spaces.
