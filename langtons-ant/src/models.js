@@ -97,9 +97,12 @@ class Board {
       this.xMin = xMin;
       this.yMax = yMax;
       this.yMin = yMin;
+      this.boardWidth = Math.abs(this.xMin) + Math.abs(this.xMax) + 1;
+      this.boardHeight = Math.abs(this.yMin) + Math.abs(this.yMax) + 1;
       this.updateBoardBounds(xMin, yMax) //get bounds by updating far corners
       this.updateBoardBounds(xMax, yMin)
       this.updateSquareSize()
+      console.log(this.squareSize)
   }
   /**
    * Given an x coordinate, y coordinate, and color, toggles a dark space on
@@ -145,8 +148,9 @@ class Board {
       hasChanged = true;
     }
     if (hasChanged) {
-      this.boardWidth = Math.abs(this.xMin) + Math.abs(this.xMax);
-      this.boardHeight = Math.abs(this.yMin) + Math.abs(this.yMax);
+      this.boardWidth = Math.abs(this.xMin) + Math.abs(this.xMax) + 1;
+      this.boardHeight = Math.abs(this.yMin) + Math.abs(this.yMax) + 1;
+      console.log("pee", this.boardWidth, this.boardHeight)
     }
     return hasChanged;
   }
@@ -155,10 +159,10 @@ class Board {
    * Updates the size of canvas squares
    */
   updateSquareSize() {
-    this.squareSize = (this.boardWidth / this.canvasWidth <=
-     this.boardHeight / this.canvasHeight)
-     ? Math.floor(this.boardWidth / this.canvasWidth)
-     : Math.floor(this.boardHeight / this.canvasHeight)
+    this.squareSize = (this.canvasWidth / this.boardWidth <=
+     this.canvasHeight / this.boardHeight)
+     ? Math.floor(this.canvasWidth / this.boardWidth)
+     : Math.floor(this.canvasHeight/ this.boardHeight)
   }
 
   /**
@@ -176,9 +180,8 @@ class Board {
    *
    * Returns [x,y]
    */
-  transformCoordinates(x, y, canvasWidth, canvasHeight) {
+  transformCoordinates(x, y) {
     //throw error if x or y out of bounds
-
     const xPixels = Math.abs(this.xMin - x) * this.squareSize
     const yPixels = Math.abs(this.yMax - y) * this.squareSize
 
