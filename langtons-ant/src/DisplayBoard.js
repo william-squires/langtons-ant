@@ -11,14 +11,12 @@ const initialBoardDims = [-10, 10, -10, 10];
  *  board: Board instance with dark spaces
  *
  * State:
- *  boardDims: Array [xMin,xMax,yMin,yMax] of board dimenstions
  *  canvas: reference to the canvas that is to be updated.
  *
  * @param {Board} board
  */
 
 function DisplayBoard(board) {
-  const [boardDims, setBoardDims] = useState(initialBoardDims);
   const [canvas, setCanvas] = useState(null);
 
   useEffect(function getCanvasOnMount() {
