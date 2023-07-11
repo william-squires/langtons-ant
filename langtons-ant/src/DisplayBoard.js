@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import {Ant, Board} from "./models"
+import { Ant, Board } from "./models";
 
-const initialBoardDims = [-10,10,-10,10]
+const initialBoardDims = [-10, 10, -10, 10];
 
 /**
  * Displays the current board state.
@@ -14,7 +14,7 @@ const initialBoardDims = [-10,10,-10,10]
  *  boardDims: Array [xMin,xMax,yMin,yMax] of board dimenstions
  *  canvas: reference to the canvas that is to be updated.
  *
- * @param {Board} boards
+ * @param {Board} board
  */
 
 function DisplayBoard(board) {
@@ -23,7 +23,7 @@ function DisplayBoard(board) {
 
   useEffect(function getCanvasOnMount() {
     setCanvas(document.getElementById("canvas"));
-  }, [])
+  }, []);
 
   if (canvas) {
     const ctx = canvas.getContext("2d");
@@ -52,7 +52,13 @@ function DisplayBoard(board) {
   }
 
 
-  return (<canvas id="canvas"width={"1000px"}height={"1000px"}/>)
+  return (
+    <canvas
+      id="canvas"
+      width={`${board.canvasWidth}px`}
+      height={`${board.canvasHeight}px`}
+    />
+  );
 }
 
-export default DisplayBoard
+export default DisplayBoard;
