@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Ant, Board } from "./models";
 
-const initialBoardDims = [-10, 10, -10, 10];
 
 /**
  * Displays the current board state.
@@ -16,7 +15,7 @@ const initialBoardDims = [-10, 10, -10, 10];
  * @param {Board} board
  */
 
-function DisplayBoard(board) {
+function DisplayBoard({board}) {
   const [canvas, setCanvas] = useState(null);
 
   useEffect(function getCanvasOnMount() {
@@ -26,9 +25,14 @@ function DisplayBoard(board) {
   if (canvas) {
     const ctx = canvas.getContext("2d");
 
-
-
-
+    for (const [coordinates, color] of board.board.entries()) {
+      console.log(`${coordinates}, ${color}`)
+      const coords = board.transformCoordinates(coordinates[0],coordinates[1])
+      console.log(coords[0], coords[1])
+      const squareSize = board.squareSize
+      ctx.fillStyle = color
+      ctx.fillRect(coords[0], coords[1],squareSize, squareSize)
+    }
 
     // ctx.lineWidth= 2
     // let numVerticalLines = Math.abs(boardDims[0]) + Math.abs(boardDims[1]) + 1
@@ -51,11 +55,13 @@ function DisplayBoard(board) {
 
 
   return (
-    <canvas
-      id="canvas"
-      width={`${board.canvasWidth}px`}
-      height={`${board.canvasHeight}px`}
-    />
+    <div style={{border: "1px solid red"}}>
+      <canvas
+        id="canvas"
+        width={`${board.canvasWidth}px`}
+        height={`${board.canvasHeight}px`}
+      />
+    </div>
   );
 }
 
